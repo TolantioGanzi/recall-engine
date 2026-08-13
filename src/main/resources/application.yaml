@@ -1,3 +1,27 @@
+# src/main/resources/application.yml
 spring:
   application:
     name: recall-engine
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/recall}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: validate      # Flyway owns the schema, not Hibernate
+    open-in-view: false       # see the warning below
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG   # turn this off before you demo
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
