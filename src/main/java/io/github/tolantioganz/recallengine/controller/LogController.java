@@ -1,12 +1,14 @@
 package io.github.tolantioganz.recallengine.controller;
 
 import io.github.tolantioganz.recallengine.domain.LCProblem;
+import io.github.tolantioganz.recallengine.domain.UserProblem;
+import io.github.tolantioganz.recallengine.dto.RecordRequest;
 import io.github.tolantioganz.recallengine.service.LogOrchestrator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/logs")
+@RequestMapping("/api/logs")
 public class LogController {
     private final LogOrchestrator logOrchestrator;
 
@@ -19,9 +21,9 @@ public class LogController {
      * @param id Problem ID of the LeetCode problem
      * @return LeetCode Problem Object
      */
-    @GetMapping("validate")
+    @GetMapping("/validate")
     public ResponseEntity<LCProblem> validateProblem(@RequestParam("id") int id) {
-        LCProblem lcProblem = logOrchestrator.get(id);
+        LCProblem lcProblem = logOrchestrator.getOfficialProblem(id);
         if(lcProblem == null) {
             return ResponseEntity.notFound().build();
         }
@@ -30,12 +32,17 @@ public class LogController {
 
     /**
      *
-     * @param problem LeetCode Problem Object
+     * @param request LeetCode Problem Object
      * @return Response indicating that result of method call
      */
     @PostMapping("/record")
-    public ResponseEntity<String> recordLog(@RequestBody LCProblem problem) {
-        logOrchestrator.record(problem);
-        return ResponseEntity.ok("Logged successfully");
+    public ResponseEntity<String> recordLog(@RequestBody RecordRequest request) {
+        UserProblem savedUserProblem = logOrchestrator.record(
+                request.getProblemID(),
+                request.getConfidence(),
+                request.getPattern(),
+                request.getFailLog()
+        );
+        return ResponseEntity.ok("Logged successfully \n" + savedUserProblem);
     }
 }

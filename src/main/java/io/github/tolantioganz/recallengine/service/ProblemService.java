@@ -2,15 +2,15 @@ package io.github.tolantioganz.recallengine.service;
 
 
 import io.github.tolantioganz.recallengine.domain.LCProblem;
-import io.github.tolantioganz.recallengine.repository.ProblemRepository;
+import io.github.tolantioganz.recallengine.repository.UserProblemRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProblemService {
     private final LogService logService;
-    private final ProblemRepository problemRepository;
+    private final UserProblemRepository problemRepository;
 
-    public ProblemService(LogService logService, ProblemRepository problemRepository) {
+    public ProblemService(LogService logService, UserProblemRepository problemRepository) {
         this.logService = logService;
         this.problemRepository = problemRepository;
     }

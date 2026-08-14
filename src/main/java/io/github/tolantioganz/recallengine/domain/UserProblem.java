@@ -1,20 +1,27 @@
 package io.github.tolantioganz.recallengine.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Setter
 @Getter
-
-public class Problem {
+@NoArgsConstructor
+@Entity
+@Table(name = "user_problems")
+public class UserProblem {
     private String title;
     private int difficulty;
     private String pattern;
-    private String state; // NEW / LEARNING / MASTERED
+    private String state;
     private String failLog;
 
+    @Id
     private int problemNumber;
     private int confidence;
     private int step;
@@ -23,9 +30,9 @@ public class Problem {
     private LocalDate nextRecall;
 
 
-    public Problem(int difficulty, String title, String pattern,
-                   int problemNumber, int confidence,
-                   LocalDate nextRecall, String failLog) {
+    public UserProblem(int difficulty, String title, String pattern,
+                       int problemNumber, int confidence,
+                       LocalDate nextRecall, String failLog) {
         this.difficulty = difficulty;
         this.title = title;
         this.pattern = pattern;
