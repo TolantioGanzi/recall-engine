@@ -1,30 +1,39 @@
 package io.github.tolantioganz.recallengine.service;
-
-import io.github.tolantioganz.recallengine.domain.Attempt;
+import io.github.tolantioganz.recallengine.domain.LCProblem;
+import io.github.tolantioganz.recallengine.domain.UserAttempt;
 import io.github.tolantioganz.recallengine.dto.DiagnosisRequest;
-import org.springframework.beans.factory.parsing.Problem;
+import io.github.tolantioganz.recallengine.repository.LCProblemRepository;
+import io.github.tolantioganz.recallengine.repository.UserAttemptRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AttemptOrchestrator {
-    private final ProblemService problemService;
-    private final AttemptService attemptService;
-    private final DiagnosisService diagnosisService;
-    private final PriorityScoreService scoringService;
+@AllArgsConstructor
 
-    public AttemptOrchestrator(ProblemService problemService,
-                               AttemptService attemptService,
-                               DiagnosisService diagnosisService,
-                               PriorityScoreService scoringService) {
-        this.problemService = problemService;
-        this.attemptService = attemptService;
-        this.diagnosisService = diagnosisService;
-        this.scoringService = scoringService;
+public class AttemptOrchestrator {
+    private final LCProblemRepository lcProblemRepo;
+    private final UserAttemptRepository userAttemptRepo;
+    private final ScoringService scoringService;
+
+
+    // validate problem
+    public LCProblem getOfficialProblem(int problemID) {
+        return lcProblemRepo.findById(problemID).orElse(null);
     }
-    public Attempt record(int problemID, DiagnosisRequest req) {
-        Problem problem = problemService.get(problemID);
-        Attempt attempt = diagnosisService.build(problem, req);
-        attempt.setPriorityScore(scoringService.score(/* which numbers*/));
-        return attemptService.log(attempt);
+    public UserAttempt record(DiagnosisRequest diagnosisRequest) {
+        // calculate score
+        double score = scoringService.generateScore(diagnosisRequest, 5); // CHANGE TEST
+        // Create new UserAttempt using Data
+        UserAttempt userAttempt = new UserAttempt(diagnosisRequest, score);
+        // Save UserAttempt to Repo
+        return userAttemptRepo.save(userAttempt);
     }
+    public UserAttempt record(int problemID, DiagnosisRequest diagnosisRequest) {
+        double score = scoringService.generateScore(diagnosisRequest, 5);
+        UserAttempt userAttempt = new UserAttempt(diagnosisRequest, score);
+        return userAttemptRepo.save(userAttempt);
+    }
+
 }
+
+

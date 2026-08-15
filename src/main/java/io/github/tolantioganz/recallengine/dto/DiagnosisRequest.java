@@ -1,6 +1,8 @@
 package io.github.tolantioganz.recallengine.dto;
 
+
 public record DiagnosisRequest(
+        int problemID,
         int patternScore,
         int implementationScore,
         int complexityScore,

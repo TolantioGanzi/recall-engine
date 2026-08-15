@@ -1,20 +1,18 @@
 package io.github.tolantioganz.recallengine.service;
 
-import io.github.tolantioganz.recallengine.domain.Attempt;
-import io.github.tolantioganz.recallengine.repository.AttemptRepository;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import io.github.tolantioganz.recallengine.domain.UserAttempt;
+import io.github.tolantioganz.recallengine.dto.DiagnosisRequest;
+import io.github.tolantioganz.recallengine.repository.UserAttemptRepository;
 import org.springframework.stereotype.Service;
 
 
 import static java.lang.Math.clamp;
 
 @Service
-class PriorityScoreService {
+class ScoringService {
 
-    private final AttemptRepository attemptRepo;
-    public PriorityScoreService(AttemptRepository attemptRepo){
+    private final UserAttemptRepository attemptRepo;
+    public ScoringService(UserAttemptRepository attemptRepo){
         this.attemptRepo = attemptRepo;
     }
 
@@ -34,40 +32,36 @@ class PriorityScoreService {
     private static final double HALFLIFE_DECENT = 7.0;
     private static final double HALFLIFE_CLEAN  = 14.0;
 
-    // Refractor to a record for attempt.
-    // Install a Task List or Notes for IntelliJ
-    public void generateScore(Attempt attempt) {
-        double rawScore      = computeRawScore     (attempt);
-        double penaltyFactor = computePenaltyFactor(attempt.getHintsUsed());
-        double timeFactor    = computeTimeFactor   (timeMap[attempt.getDifficulty()], attempt.getActualTime());
-        System.out.println("medium time " + timeMap[attempt.getDifficulty()]);
+    public double generateScore(DiagnosisRequest diagnosisRequest, long daysSince) {
+        double rawScore      = computeRawScore(diagnosisRequest);
+        double penaltyFactor = computePenaltyFactor(diagnosisRequest.hintsUsed());
+        double timeFactor    = 0.7; // Default for now
         double performance = rawScore * penaltyFactor * timeFactor;
 
-        long   daysSince   = attemptRepo.getDaysSinceLastAttempt(attempt);
         double halfLife    = computeHalfLife (performance);
         double decayBoost  = computeDecayBost(daysSince, halfLife);                                                        // days since attempt
 
         double need        = 1.0 - performance;
-        double diffNorm    = diffMultiplier[attempt.getDifficulty()] / 1.3;
+        double diffNorm    =  1.5; //diffMultiplier[attempt.getDifficulty()] / 1.3;
         double priority    = 1.0 + 99.0 * (need * decayBoost * diffNorm);
 
-        attempt.setPriorityScore(clamp(priority, 1.0, 100.0));
+        return clamp(priority, 1.0, 100.0);
 
     }
-    private double computeRawScore(Attempt attempt) {
-        return W_PATTERN       * (attempt.getPatternScore() / 10.0)
-                + W_IMPL       * (attempt.getImplementationScore() / 10.0)
-                + W_DEBUG      * (attempt.getDebugScore() / 10.0)
-                + W_COMPLEXITY * (attempt.getComplexityScore() / 10.0);
+    private double computeRawScore(DiagnosisRequest diagnosisRequest) {
+        return W_PATTERN       * (diagnosisRequest.patternScore() / 10.0)
+                + W_IMPL       * (diagnosisRequest.implementationScore() / 10.0)
+                + W_DEBUG      * (diagnosisRequest.debugScore() / 10.0)
+                + W_COMPLEXITY * (diagnosisRequest.complexityScore() / 10.0);
     }
     private double computePenaltyFactor(int hintsUsed) {
         double penalty = 1.0 - (hintsUsed * HINT_PENALTY);
         return Math.max(MIN_PENALTY, penalty);
     }
     private double computeHalfLife(double performance) {
-        if(performance < 0.4) return HALFLIFE_BOMBED; // failed
-        else if(performance < 0.7) return HALFLIFE_DECENT; // Took time, but got it to work, needed hints and guidance
-        else return HALFLIFE_CLEAN; // Solved it easy
+        if(performance < 0.4) return HALFLIFE_BOMBED;
+        else if(performance < 0.7) return HALFLIFE_DECENT;
+        else return HALFLIFE_CLEAN;
     }
     private double computeDecayBost(long daysSince, double halfLife) {
         System.out.println("Days Since Test " + daysSince);
@@ -75,7 +69,7 @@ class PriorityScoreService {
         return Math.exp((double) cappedDays / halfLife);
     }
     private double computeTimeFactor(double expected, double actual) {
-        if(expected <= 0 || actual <= 0) return 1.0;// prevent divide by zero error
+        if(expected <= 0 || actual <= 0) return 1.0;
         double ratio = expected / actual;
         return clamp(ratio, 0.5, 1.2);
     }
