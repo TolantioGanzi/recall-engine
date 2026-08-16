@@ -15,20 +15,16 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "user_problems")
 public class UserProblem {
-    private String title;
-    private int difficulty;
-    private String pattern;
-    private String state;
-    private String failLog;
-
     @Id
     private int problemNumber;
     private int confidence;
     private int step;
-
+    private int difficulty;
+    private String title;
+    private String pattern;
+    private String failLog;
     private LocalDate dateAdded;
     private LocalDate nextRecall;
-
 
     public UserProblem(int difficulty, String title, String pattern,
                        int problemNumber, int confidence,
@@ -40,7 +36,6 @@ public class UserProblem {
         this.confidence = confidence;
         this.dateAdded = LocalDate.now();
         this.nextRecall = nextRecall;
-        this.state = "NEW";
         this.failLog = failLog;
         this.step = 1;
     }

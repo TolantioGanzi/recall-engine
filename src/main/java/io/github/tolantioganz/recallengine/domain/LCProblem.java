@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.List;
 
@@ -14,14 +16,13 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "problems")
-
 public class LCProblem {
     @Id
     private int id;
-    private String title;
     private int difficulty;
-    private List<String> topics;
     private boolean premium_only;
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    private List<String> topics;
     private String similar_questions;
-
+    private String title;
 }

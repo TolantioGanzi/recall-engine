@@ -30,11 +30,11 @@ public class UserAttempt {
     private int hintsUsed;
 
     private long daysSinceAttempt;
-    private int result; // 0 - Fail | 1 - Pass
-    private int difficulty; // 0 - easy | 1 - medium | 2 - Hard
-    private int actualTime; // minutes - round to nearest minute
-    private String pattern; // Sliding Window | Stack | Queue
-    private String optimalSolution; // 1 sentence Short
+    private int result;
+    private int difficulty;
+    private int actualTime;
+    private String pattern;
+    private String optimalSolution;
     private LocalDate attemptDate;
 
     public UserAttempt(DiagnosisRequest diagnosisRequest, double score) {
