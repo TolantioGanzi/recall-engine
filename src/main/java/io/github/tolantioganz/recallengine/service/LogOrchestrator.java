@@ -13,15 +13,13 @@ public class LogOrchestrator {
     private final UserProblemRepository userProblemRepo;
     private final LCProblemRepository lcRepo;
     private final ScheduleService scheduleService;
-    private final ProblemService problemService;
+    //private final ProblemService problemService;
 
     public LogOrchestrator (UserProblemRepository userProblemRepo,
                            ScheduleService scheduleService,
-                           ProblemService problemService,
                             LCProblemRepository lcRepo) {
         this.userProblemRepo = userProblemRepo;
         this.scheduleService = scheduleService;
-        this.problemService = problemService;
         this.lcRepo = lcRepo;
     }
     public LCProblem getOfficialProblem(int problemID) {
