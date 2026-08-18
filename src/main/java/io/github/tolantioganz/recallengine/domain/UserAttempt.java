@@ -1,9 +1,7 @@
 package io.github.tolantioganz.recallengine.domain;
 
 import io.github.tolantioganz.recallengine.dto.DiagnosisRequest;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,26 +13,55 @@ import java.time.temporal.ChronoUnit;
 @Getter
 @Setter
 @NoArgsConstructor
-
+@AllArgsConstructor
 @Entity
 @Table(name = "attempts")
 public class UserAttempt {
-    // Identifier
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "problem_id")
     private int problemID;
+
+    @Column(name = "priority_score")
     private double priorityScore;
+
+    @Column(name = "pattern_score")
     private int patternScore;
+
+    @Column(name = "implementation_score")
     private int implementationScore;
+
+    @Column(name = "complexity_score")
     private int complexityScore;
+
+    @Column(name = "debug_score")
     private int debugScore;
+
+    @Column(name = "hints_used")
     private int hintsUsed;
 
+    @Column(name = "days_since_attempt")
     private long daysSinceAttempt;
+
+    @Column(name = "result")
     private int result;
+
+    @Column(name = "difficulty")
     private int difficulty;
+
+    @Column(name = "actual_time")
     private int actualTime;
+
+    @Column(name = "pattern")
     private String pattern;
+
+    @Column(name = "optimal_solution")
     private String optimalSolution;
+
+    @Column(name = "attempt_date")
     private LocalDate attemptDate;
 
     public UserAttempt(DiagnosisRequest diagnosisRequest, double score) {
@@ -52,11 +79,11 @@ public class UserAttempt {
         this.actualTime = diagnosisRequest.actualTime();
         // Place-Holders : Change for testing
         this.difficulty = 1; // CHANGE
-        this.daysSinceAttempt = 5; // CHANGE
+        this.daysSinceAttempt = getDaysSinceAttempt();
     }
     // method to get days since attempt
-    public long getDaysSinceLastAttempt() {
-        LocalDate currentAttempt = LocalDate.now();
-        return ChronoUnit.DAYS.between(this.attemptDate, currentAttempt);
+    public long getDaysSinceAttempt() {
+        if(this.attemptDate == null) return 0;
+        return ChronoUnit.DAYS.between(this.attemptDate, LocalDate.now());
     }
 }

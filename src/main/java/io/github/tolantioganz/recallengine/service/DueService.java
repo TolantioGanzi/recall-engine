@@ -20,7 +20,10 @@ public class DueService {
     public List<UserProblem> getUserProblem() {
         List<UserProblem> dueProblems = problemRepo.getDueProblems(LocalDateTime.now());
 
-        //attemptRepo.findFirstByOrderByPriorityScoreDesc().ifPresent()
+        attemptRepo.findFirstByOrderByPriorityScoreDesc().ifPresent(attempt -> {
+            System.out.println("Attempt number LeetCode Number -> : " + attempt.getProblemID());
+
+        });
         return dueProblems;
     }
 }

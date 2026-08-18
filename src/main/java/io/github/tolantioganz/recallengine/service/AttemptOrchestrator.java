@@ -7,9 +7,10 @@ import io.github.tolantioganz.recallengine.repository.UserAttemptRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
-@AllArgsConstructor
+import java.time.LocalDate;
 
+@AllArgsConstructor
+@Service
 public class AttemptOrchestrator {
     private final LCProblemRepository lcProblemRepo;
     private final UserAttemptRepository userAttemptRepo;
