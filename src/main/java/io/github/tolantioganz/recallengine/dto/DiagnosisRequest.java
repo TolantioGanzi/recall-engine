@@ -11,6 +11,7 @@ public record DiagnosisRequest(
         int result,
         int actualTime,
         String pattern,
-        String optimalSolution
+        String optimalSolution,
+        String difficulty
 ) {
 }

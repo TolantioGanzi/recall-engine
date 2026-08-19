@@ -1,29 +1,17 @@
 package io.github.tolantioganz.recallengine.service;
-
-import io.github.tolantioganz.recallengine.domain.UserAttempt;
 import io.github.tolantioganz.recallengine.dto.DiagnosisRequest;
-import io.github.tolantioganz.recallengine.repository.UserAttemptRepository;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
 import static java.lang.Math.clamp;
-
+@NoArgsConstructor
 @Service
 class ScoringService {
-
-    private final UserAttemptRepository attemptRepo;
-    public ScoringService(UserAttemptRepository attemptRepo){
-        this.attemptRepo = attemptRepo;
-    }
-
-    // Difficulty
-    private final double[] diffMultiplier       = new double[]{0.8, 1.0, 1.3};
-    private final int[]    timeMap              = new int[]   {20, 30, 45   };
-    // Weights
-    private        final double W_PATTERN       = 0.35;
-    private        final double W_IMPL          = 0.25;
-    private        final double W_COMPLEXITY    = 0.20;
-    private        final double W_DEBUG         = 0.20;
+    private final double W_PATTERN       = 0.35;
+    private final double W_IMPL          = 0.25;
+    private final double W_COMPLEXITY    = 0.20;
+    private final double W_DEBUG         = 0.20;
 
     private static final double HINT_PENALTY    = 0.15;
     private static final double MIN_PENALTY     = 0.40;
@@ -35,15 +23,18 @@ class ScoringService {
     public double generateScore(DiagnosisRequest diagnosisRequest, long daysSince) {
         double rawScore      = computeRawScore(diagnosisRequest);
         double penaltyFactor = computePenaltyFactor(diagnosisRequest.hintsUsed());
-        double timeFactor    = 0.7; // Default for now
-        double performance = rawScore * penaltyFactor * timeFactor;
+        double expectedTime  = diagnosisRequest.difficulty().equals("easy") ? 20.0
+                             : diagnosisRequest.difficulty().equals("medium") ? 30.0 : 45.0;
+        double timeFactor    = computeTimeFactor(expectedTime, diagnosisRequest.actualTime());
+        double performance   = rawScore * penaltyFactor * timeFactor;
 
-        double halfLife    = computeHalfLife (performance);
-        double decayBoost  = computeDecayBost(daysSince, halfLife);                                                        // days since attempt
+        double halfLife      = computeHalfLife (performance);
+        double decayBoost    = computeDecayBoost(daysSince, halfLife);                                                        // days since attempt
 
-        double need        = 1.0 - performance;
-        double diffNorm    =  1.5; //diffMultiplier[attempt.getDifficulty()] / 1.3;
-        double priority    = 1.0 + 99.0 * (need * decayBoost * diffNorm);
+        double need          = 1.0 - performance;
+        double diffNorm      = diagnosisRequest.difficulty().equals("easy") ? 0.8
+                             : diagnosisRequest.difficulty().equals("medium") ? 1.0 : 1.3;
+        double priority      = 1.0 + 99.0 * (need * decayBoost * diffNorm);
 
         return clamp(priority, 1.0, 100.0);
 
@@ -63,8 +54,7 @@ class ScoringService {
         else if(performance < 0.7) return HALFLIFE_DECENT;
         else return HALFLIFE_CLEAN;
     }
-    private double computeDecayBost(long daysSince, double halfLife) {
-        System.out.println("Days Since Test " + daysSince);
+    private double computeDecayBoost(long daysSince, double halfLife) {
         long cappedDays = Math.min(daysSince, 30);
         return Math.exp((double) cappedDays / halfLife);
     }

@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -17,24 +19,31 @@ public class AttemptOrchestrator {
     private final ScoringService scoringService;
 
 
-    // validate problem
     public LCProblem getOfficialProblem(int problemID) {
         return lcProblemRepo.findById(problemID).orElse(null);
     }
     public UserAttempt record(DiagnosisRequest diagnosisRequest) {
-        // calculate score
-        double score = scoringService.generateScore(diagnosisRequest, 5); // CHANGE TEST
-        // Create new UserAttempt using Data
-        UserAttempt userAttempt = new UserAttempt(diagnosisRequest, score);
-        // Save UserAttempt to Repo
+        UserAttempt userAttempt = new UserAttempt(diagnosisRequest);
+        long daysSinceAttempt = getDaysSinceLastAttempt(userAttempt);
+        double score = scoringService.generateScore(diagnosisRequest, daysSinceAttempt);
+        userAttempt.setDaysSinceAttempt(daysSinceAttempt);
+        userAttempt.setPriorityScore(score);
         return userAttemptRepo.save(userAttempt);
     }
     public UserAttempt record(int problemID, DiagnosisRequest diagnosisRequest) {
-        double score = scoringService.generateScore(diagnosisRequest, 5);
-        UserAttempt userAttempt = new UserAttempt(diagnosisRequest, score);
+        // ***TEST | MIGHT BE WRONG | PROBLEM_ID NEEDS TO BE USED**
+        UserAttempt userAttempt = new UserAttempt(diagnosisRequest);
+        long daysSinceAttempt = getDaysSinceLastAttempt(userAttempt);
+        double score = scoringService.generateScore(diagnosisRequest, daysSinceAttempt);
+        userAttempt.setDaysSinceAttempt(daysSinceAttempt);
+        userAttempt.setPriorityScore(score);
         return userAttemptRepo.save(userAttempt);
     }
-
+    public long getDaysSinceLastAttempt(UserAttempt userAttempt) {
+        return userAttemptRepo.findLatestAttemptDateByProblemId(userAttempt.getProblemID())
+                .map(latestDate -> ChronoUnit.DAYS.between(latestDate, LocalDate.now()))
+                .orElse(0L);
+    }
 }
 
 

@@ -26,7 +26,7 @@ public class UserAttempt {
     private int problemID;
 
     @Column(name = "priority_score")
-    private double priorityScore;
+    private Double priorityScore;
 
     @Column(name = "pattern_score")
     private int patternScore;
@@ -64,7 +64,7 @@ public class UserAttempt {
     @Column(name = "attempt_date")
     private LocalDate attemptDate;
 
-    public UserAttempt(DiagnosisRequest diagnosisRequest, double score) {
+    public UserAttempt(DiagnosisRequest diagnosisRequest) {
         this.problemID = diagnosisRequest.problemID();
         this.patternScore = diagnosisRequest.patternScore();
         this.implementationScore = diagnosisRequest.implementationScore();
@@ -72,18 +72,14 @@ public class UserAttempt {
         this.debugScore = diagnosisRequest.debugScore();
         this.hintsUsed = diagnosisRequest.hintsUsed();
         this.result = diagnosisRequest.result();
-        this.priorityScore = score;
+        this.priorityScore = null;
         this.pattern = diagnosisRequest.pattern();
         this.optimalSolution = diagnosisRequest.optimalSolution();
         this.attemptDate = LocalDate.now();
         this.actualTime = diagnosisRequest.actualTime();
         // Place-Holders : Change for testing
-        this.difficulty = 1; // CHANGE
+        this.difficulty = diagnosisRequest.difficulty().equals("easy") ? 0 :
+                          diagnosisRequest.difficulty().equals("medium") ? 1 : 2; // CHANGE
         this.daysSinceAttempt = getDaysSinceAttempt();
-    }
-    // method to get days since attempt
-    public long getDaysSinceAttempt() {
-        if(this.attemptDate == null) return 0;
-        return ChronoUnit.DAYS.between(this.attemptDate, LocalDate.now());
     }
 }
