@@ -19,8 +19,8 @@ public class AttemptOrchestrator {
     private final ScoringService scoringService;
 
 
-    public LCProblem getOfficialProblem(int problemID) {
-        return lcProblemRepo.findById(problemID).orElse(null);
+    public LCProblem getOfficialProblem(int problemId) {
+        return lcProblemRepo.findById(problemId).orElse(null);
     }
     public UserAttempt record(DiagnosisRequest diagnosisRequest) {
         UserAttempt userAttempt = new UserAttempt(diagnosisRequest);
@@ -40,7 +40,7 @@ public class AttemptOrchestrator {
         return userAttemptRepo.save(userAttempt);
     }
     public long getDaysSinceLastAttempt(UserAttempt userAttempt) {
-        return userAttemptRepo.findLatestAttemptDateByProblemId(userAttempt.getProblemID())
+        return userAttemptRepo.findLatestAttemptDateByProblemId(userAttempt.getProblemId())
                 .map(latestDate -> ChronoUnit.DAYS.between(latestDate, LocalDate.now()))
                 .orElse(0L);
     }

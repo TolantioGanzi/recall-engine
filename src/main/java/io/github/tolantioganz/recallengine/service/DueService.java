@@ -21,7 +21,7 @@ public class DueService {
         List<UserProblem> dueProblems = problemRepo.getDueProblems(LocalDateTime.now());
 
         attemptRepo.findFirstByOrderByPriorityScoreDesc().ifPresent(attempt -> {
-            System.out.println("Attempt number LeetCode Number -> : " + attempt.getProblemID());
+            System.out.println("Attempt number LeetCode Number -> : " + attempt.getProblemId());
 
         });
         return dueProblems;

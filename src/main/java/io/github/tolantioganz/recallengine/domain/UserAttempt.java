@@ -23,7 +23,7 @@ public class UserAttempt {
     private Long id;
 
     @Column(name = "problem_id")
-    private int problemID;
+    private int problemId;
 
     @Column(name = "priority_score")
     private Double priorityScore;
@@ -65,7 +65,7 @@ public class UserAttempt {
     private LocalDate attemptDate;
 
     public UserAttempt(DiagnosisRequest diagnosisRequest) {
-        this.problemID = diagnosisRequest.problemID();
+        this.problemId = diagnosisRequest.problemID();
         this.patternScore = diagnosisRequest.patternScore();
         this.implementationScore = diagnosisRequest.implementationScore();
         this.complexityScore = diagnosisRequest.complexityScore();
@@ -80,6 +80,6 @@ public class UserAttempt {
         // Place-Holders : Change for testing
         this.difficulty = diagnosisRequest.difficulty().equals("easy") ? 0 :
                           diagnosisRequest.difficulty().equals("medium") ? 1 : 2; // CHANGE
-        this.daysSinceAttempt = getDaysSinceAttempt();
+        this.daysSinceAttempt = 0;
     }
 }

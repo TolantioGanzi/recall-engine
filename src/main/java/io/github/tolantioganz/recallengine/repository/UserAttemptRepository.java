@@ -12,7 +12,7 @@ public interface UserAttemptRepository extends JpaRepository<UserAttempt, Intege
     // Generates "SELECT * FROM attempts ORDER by priority_score DESC LIMIT 1"
     Optional<UserAttempt> findFirstByOrderByPriorityScoreDesc();
 
-    @Query("SELECT a.attemptDate FROM UserAttempt a WHERE a.problemID = :problemID ORDER BY a.attemptDate DESC LIMIT 1")
+    @Query("SELECT a.attemptDate FROM UserAttempt a WHERE a.problemId = :problemID ORDER BY a.attemptDate DESC LIMIT 1")
     Optional<LocalDate> findLatestAttemptDateByProblemId(int problemId);
 
 }
