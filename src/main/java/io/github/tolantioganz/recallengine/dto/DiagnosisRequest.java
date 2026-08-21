@@ -1,7 +1,11 @@
 package io.github.tolantioganz.recallengine.dto;
 
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+
 public record DiagnosisRequest(
+        @NotEmpty(message = "Problem ID cannot be blank")
         int problemID,
         int patternScore,
         int implementationScore,
