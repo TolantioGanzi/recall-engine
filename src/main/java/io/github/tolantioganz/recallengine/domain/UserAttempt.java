@@ -65,7 +65,7 @@ public class UserAttempt {
     private LocalDate attemptDate;
 
     public UserAttempt(DiagnosisRequest diagnosisRequest) {
-        this.problemId = diagnosisRequest.problemID();
+        this.problemId = diagnosisRequest.problemId();
         this.patternScore = diagnosisRequest.patternScore();
         this.implementationScore = diagnosisRequest.implementationScore();
         this.complexityScore = diagnosisRequest.complexityScore();

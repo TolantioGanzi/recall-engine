@@ -18,8 +18,8 @@ import java.time.LocalDate;
 @Table(name = "user_problems")
 public class UserProblem {
     @Id
-    private long ID;
     private int problemNumber;
+
     private int confidence;
     private int step;
     private int difficulty;

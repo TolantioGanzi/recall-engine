@@ -1,0 +1,6 @@
+body {
+    font-family: system-ui, sans-serif;
+    max-width: 900px; /*Stops text spanning a 27-inch monitor*/
+    margin: 2rem auto;
+    padding: 01rem;
+}

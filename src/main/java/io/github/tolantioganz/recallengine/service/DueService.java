@@ -4,11 +4,13 @@ package io.github.tolantioganz.recallengine.service;
 import io.github.tolantioganz.recallengine.domain.UserProblem;
 import io.github.tolantioganz.recallengine.repository.UserAttemptRepository;
 import io.github.tolantioganz.recallengine.repository.UserProblemRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+@Service
 public class DueService {
     private final UserProblemRepository problemRepo;
     private final UserAttemptRepository attemptRepo;

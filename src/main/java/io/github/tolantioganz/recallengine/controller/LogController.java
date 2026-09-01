@@ -7,6 +7,8 @@ import io.github.tolantioganz.recallengine.service.LogOrchestrator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/logs")
 public class LogController {
@@ -44,5 +46,9 @@ public class LogController {
                 request.getFailLog()
         );
         return ResponseEntity.ok("Logged successfully \n" + savedUserProblem);
+    }
+    @GetMapping("/all")
+    public ResponseEntity<List<UserProblem>> listLogged() {
+        return ResponseEntity.ok(logOrchestrator.getAllLogged());
     }
 }

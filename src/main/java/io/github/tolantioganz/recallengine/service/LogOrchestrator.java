@@ -6,6 +6,7 @@ import io.github.tolantioganz.recallengine.repository.LCProblemRepository;
 import io.github.tolantioganz.recallengine.repository.UserProblemRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Service
@@ -31,9 +32,7 @@ public class LogOrchestrator {
                               String failLog) {
         LCProblem lcProblem = lcRepo.findById(problemID).orElseThrow(() ->
                 new IllegalArgumentException("Problem not found " + problemID));
-
         LocalDate nextRecallDate = scheduleService.getStandardRecall();
-
         UserProblem userProblem = new UserProblem(
                 lcProblem.getDifficulty(),
                 lcProblem.getTitle(),
@@ -43,7 +42,9 @@ public class LogOrchestrator {
                 nextRecallDate,
                 failLog
         );
-
         return userProblemRepo.save(userProblem);
+    }
+    public List<UserProblem> getAllLogged() {
+        return userProblemRepo.findAll();
     }
 }
