@@ -40,7 +40,7 @@ Recall Engine is built on a layered **Controller–Service–Repository** archit
 
 ```json
 {
-  "problemNumber": 1,
+  "problemId": 1,
   "confidence": 3,
   "pattern": "Two Pointers",
   "failLog": "Forgot edge case where array length is less than 2"
