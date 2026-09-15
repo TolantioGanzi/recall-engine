@@ -14,6 +14,26 @@
     <p id="status"> nothing has happened yet</p>
     <button id="probe-btn">Look up problem 1</button>
 
+    <h2> Add problem</h2>
+    <form id ="add-form">
+        <div>
+            <label for="problem-id">Leetcode Number</label>
+            <input id="problem-id" type="number" value="1" required>
+        </div>
+        <div>
+            <label for="confidence">Confidence(1-5</label>
+            <input id="confidence" type="unumber" value="3" min="1" max="5">
+        </div>
+        <div>
+            <label for="pattern">Pattern</label>
+            <input id="pattern" type="text" value ="TwoPointers">
+        </div>
+        <div>
+            <label for="fail-log">Failure Mode</label>
+            <input id="fail-log" type="text" value="spec misread">
+        </div>
+        <button type="submit">Add problem</button>
+    </form>
     <h2>Logged Problems</h2>
     <button id="refresh-btn">Refresh</button>
     <ul id="queue"></ul>
