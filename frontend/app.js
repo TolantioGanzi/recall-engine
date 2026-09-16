@@ -49,6 +49,35 @@ testBtn.addEventListener("click", function() {
 });
 
 // Add Problem
-const addForm = document.querySelector("add-form");
+const addForm = document.querySelector("#add-form");
+const problemIdInput = document.querySelector("#problem-id");
+const confidenceInput = document.querySelector("#confidence");
+const patternInput = document.querySelector("#pattern");
+const failLogInput = document.querySelector("#fail-log");
 
+addForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    // Read the inputs and  convert at the edge
+    // These four keys are RecordRequest's four fields exactly
+    const body = {
+        problemID: Number(problemIdInput.value),
+        confidence: Number(confidenceInput.value),
+        pattern: patternInput.value,
+        failLog: failLogInput.value
+    };
+
+    console.log("sending:", JSON.stringify(body));
+
+    const response = await fetch(`${API}/api/logs/record`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(body)
+    });
+
+    const text = await response.text();
+    console.log("server said:", text);
+
+    await loadQueue();
+});
 
