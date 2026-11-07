@@ -9,5 +9,4 @@ class RecallEngineApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
