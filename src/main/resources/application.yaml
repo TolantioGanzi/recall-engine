@@ -3,7 +3,7 @@ spring:
   application:
     name: recall-engine
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/recall}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/deploy_test}
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:1234}
   jpa:
